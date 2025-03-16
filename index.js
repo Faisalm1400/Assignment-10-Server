@@ -28,6 +28,7 @@ async function run() {
         await client.connect();
 
         const campaignCollection = client.db('campaignDB').collection('campaign');
+        const donatedCollection = client.db('campaignDB').collection('donated');
         const userCollection = client.db('campaignDB').collection('users');
 
         // campaign related api
@@ -137,12 +138,21 @@ async function run() {
             res.send(result);
         });
 
-        // // donated apis
-        // app.post('/donated', async (req, res) => {
-        //     const donationInfo = req.body;
-        //     const result = await donatedCollection.insertOne(donationInfo);
-        //     res.send(result);
-        // });
+        // donated apis
+        app.post('/donated', async (req, res) => {
+            const donationInfo = req.body;
+            const result = await donatedCollection.insertOne(donationInfo);
+            res.send(result);
+        });
+
+        app.get('/myDonations', async (req, res) => {
+            const email = req.query.email;
+            const filter = { email };
+
+            const cursor = donatedCollection.find(filter);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });

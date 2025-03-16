@@ -41,7 +41,7 @@ async function run() {
         })
 
         app.get('/campaign', async (req, res) => {
-            const cursor = campaignCollection.find();
+            const cursor = campaignCollection.find().limit(6);
             const result = await cursor.toArray();
             res.send(result);
         })

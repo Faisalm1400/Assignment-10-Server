@@ -59,6 +59,27 @@ async function run() {
             res.send(result);
         })
 
+        app.put('/updateCampaign/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updatedCampaign = req.body;
+
+            const campaign = {
+                $set: {
+                    image: updatedCampaign.image,
+                    title: updatedCampaign.title,
+                    type: updatedCampaign.type,
+                    description: updatedCampaign.description,
+                    minDonation: updatedCampaign.minDonation,
+                    deadline: updatedCampaign.deadline
+                }
+            }
+
+            const result = await campaignCollection.updateOne(filter, campaign, options);
+            res.send(result);
+        })
+
 
 
         // Users related api
@@ -116,12 +137,12 @@ async function run() {
             res.send(result);
         });
 
-        // donated apis
-        app.post('/donated', async (req, res) => {
-            const donationInfo = req.body;
-            const result = await donatedCollection.insertOne(donationInfo);
-            res.send(result);
-        });
+        // // donated apis
+        // app.post('/donated', async (req, res) => {
+        //     const donationInfo = req.body;
+        //     const result = await donatedCollection.insertOne(donationInfo);
+        //     res.send(result);
+        // });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
